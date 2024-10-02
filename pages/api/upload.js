@@ -22,7 +22,7 @@ export default async function handler(req, res) {
       formData.append('trace_file', fs.createReadStream(files.trace_file.filepath), files.trace_file.originalFilename);
 
       try {
-        const response = await axios.post('http://localhost:8000/analyze', formData, {
+        const response = await axios.post('http://localhost:8000/upload', formData, {
           headers: {
             ...formData.getHeaders(),
           },
