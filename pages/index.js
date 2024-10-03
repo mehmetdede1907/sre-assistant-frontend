@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
+import SREChatbot from '../components/SREChatbot';
 
 export default function Home() {
   const [metricFile, setMetricFile] = useState(null);
   const [traceFile, setTraceFile] = useState(null);
   const [results, setResults] = useState({});
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisContext, setAnalysisContext] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,19 +19,29 @@ export default function Home() {
     formData.append('trace_file', traceFile);
 
     try {
-      const response = await axios.post('http://localhost:8000/analyze', formData, {
+      await axios.post('http://localhost:8000/analyze', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
-      setResults(response.data.result);
-      setIsAnalyzing(false);
+      fetchResults();
     } catch (error) {
       console.error('Error during analysis:', error);
       setIsAnalyzing(false);
     }
   };
 
+  const fetchResults = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/results');
+      setResults(response.data);
+      setAnalysisContext(JSON.stringify(response.data));
+      setIsAnalyzing(false);
+    } catch (error) {
+      console.error('Error fetching results:', error);
+      setIsAnalyzing(false);
+    }
+  };
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">SRE Analysis Tool</h1>
@@ -63,13 +75,14 @@ export default function Home() {
       {Object.entries(results).map(([filename, content]) => (
         <div key={filename} className="mb-8">
           <h2 className="text-xl font-semibold mb-2">{filename}</h2>
-          {filename.endsWith('.md') ? (
-            <ReactMarkdown>{content}</ReactMarkdown>
-          ) : (
-            <pre className="whitespace-pre-wrap">{content}</pre>
-          )}
+          <ReactMarkdown>{content}</ReactMarkdown>
         </div>
+        
       ))}
+      <div className="mt-8">
+        <h2 className="text-xl font-semibold mb-4">SRE Assistant Chatbot</h2>
+        {analysisContext && <SREChatbot analysisContext={analysisContext} />}
+      </div>
     </div>
   );
 }
