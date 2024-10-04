@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { useState } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';

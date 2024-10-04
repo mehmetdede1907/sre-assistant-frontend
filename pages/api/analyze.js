@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import axios from 'axios';
 import formidable from 'formidable';
 import fs from 'fs';
