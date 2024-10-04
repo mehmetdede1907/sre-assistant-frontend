@@ -1,31 +1,34 @@
 import { OpenAIStream, StreamingTextResponse } from 'ai'
 import { Configuration, OpenAIApi } from 'openai-edge'
 
-// Create an OpenAI API client (that's edge friendly!)
 const config = new Configuration({
   apiKey: process.env.OPENAI_API_KEY
 })
 const openai = new OpenAIApi(config)
 
-// IMPORTANT! Set the runtime to edge
 export const runtime = 'edge'
 
 export default async function handler(req) {
-  const { messages } = await req.json()
+  const { messages, model, analysisContext } = await req.json()
 
-  // The context is now included in the first message
-  messages.slice(1)
+  // Use the selected model or default to GPT-3.5-turbo
+  const selectedModel = model || 'gpt-3.5-turbo'
 
-  // Ask OpenAI for a streaming chat completion given the prompt
+  // Ensure the context is always included
+  const contextMessage = {
+    role: 'system',
+    content: `You are an SRE assistant. Use the following context to answer questions about the system's errors and performance: ${analysisContext}`
+  }
+
+  const fullMessages = [contextMessage, ...messages.slice(1)]
+
   const response = await openai.createChatCompletion({
-    model: 'gpt-4',
+    model: selectedModel,
     stream: true,
-    messages: messages
+    messages: fullMessages
   })
 
-  // Convert the response into a friendly text-stream
   const stream = OpenAIStream(response)
   
-  // Respond with the stream
   return new StreamingTextResponse(stream)
 }
