@@ -1,0 +1,88 @@
+/* Chat container */
+.chatContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-height: 400px;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    background: #f9fafc; /* Light background */
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Messages */
+  .chatMessages {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .message {
+    padding: 12px 18px;
+    border-radius: 15px;
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 75%;
+  }
+  
+  /* User message */
+  .messageUser {
+    background-color: #e0e0e0;
+    color: #333;
+    align-self: flex-end;
+    border-radius: 15px 15px 0 15px;
+  }
+  
+  /* Bot message */
+  .messageBot {
+    background-color: #007bff;
+    color: #fff;
+    align-self: flex-start;
+    border-radius: 15px 15px 15px 0;
+  }
+  
+  /* Input container */
+  .chatInputContainer {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .chatInputBox {
+    flex: 1;
+    padding: 12px 18px;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    font-size: 14px;
+    transition: border 0.3s;
+  }
+  
+  .chatInputBox:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+  
+  /* Send button */
+  .chatSendButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .chatSendButton:hover {
+    background-color: #0056b3;
+  }
+  
+  .chatSendButton:focus {
+    outline: none;
+  }
+  
