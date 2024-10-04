@@ -14,7 +14,7 @@ export default async function handler(req) {
   const { messages } = await req.json()
 
   // The context is now included in the first message
-  const messagesWithoutContext = messages.slice(1)
+  messages.slice(1)
 
   // Ask OpenAI for a streaming chat completion given the prompt
   const response = await openai.createChatCompletion({

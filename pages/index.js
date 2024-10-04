@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import SREChatbot from '../components/SREChatbot';  // Chatbot component with input
