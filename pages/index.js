@@ -1,24 +1,22 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { useState } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
-import SREChatbot from '../components/SREChatbot';  // Chatbot component with input
-import styles from '../styles/Home.module.css';  // Import CSS for advanced design
+import SREChatbot from '../components/SREChatbot';
+import styles from '../styles/Home.module.css';
 
 export default function Home() {
   const [metricFile, setMetricFile] = useState(null);
   const [traceFile, setTraceFile] = useState(null);
   const [results, setResults] = useState({});
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisComplete, setAnalysisComplete] = useState(false);  // Only show results after analysis
+  const [analysisComplete, setAnalysisComplete] = useState(false);
   const [analysisContext, setAnalysisContext] = useState(null);
-  const [activeTab, setActiveTab] = useState('');  // Track the currently active tab
+  const [activeTab, setActiveTab] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsAnalyzing(true);
-    setAnalysisComplete(false);  // Reset the state
+    setAnalysisComplete(false);
 
     const formData = new FormData();
     formData.append('metric_file', metricFile);
@@ -43,28 +41,25 @@ export default function Home() {
       setResults(response.data);
       setAnalysisContext(JSON.stringify(response.data));
       setIsAnalyzing(false);
-      setAnalysisComplete(true);  // Show results after analysis is done
-      setActiveTab('aggregatedata.json');  // Default to show aggregatedata.json
+      setAnalysisComplete(true);
+      setActiveTab('aggregatedata.json');
     } catch (error) {
       console.error('Error fetching results:', error);
       setIsAnalyzing(false);
     }
   };
 
-  // Function to parse and render JSON content in a well-formatted design
   const safeJSONParse = (jsonString) => {
     try {
       return JSON.parse(jsonString);
     } catch (error) {
-      return jsonString;  // Return raw string if parsing fails
+      return jsonString;
     }
   };
 
-  // Render JSON-based sections like aggregatedata.json
   const renderAggregatedData = (data) => {
     if (!data) return null;
 
-    // Parse the JSON structure
     const {
       SystemOverview,
       KeyPerformanceMetrics,
@@ -87,32 +82,32 @@ export default function Home() {
 
         <section className={styles.section}>
           <h2 className={styles.sectionHeading}>Key Performance Metrics</h2>
-          <pre>{JSON.stringify(safeJSONParse(KeyPerformanceMetrics), null, 2)}</pre>
+          <pre className={styles.jsonContent}>{JSON.stringify(safeJSONParse(KeyPerformanceMetrics), null, 2)}</pre>
         </section>
 
         <section className={styles.section}>
           <h2 className={styles.sectionHeading}>Critical Errors</h2>
-          <pre>{JSON.stringify(safeJSONParse(CriticalErrors), null, 2)}</pre>
+          <pre className={styles.jsonContent}>{JSON.stringify(safeJSONParse(CriticalErrors), null, 2)}</pre>
         </section>
 
         <section className={styles.section}>
           <h2 className={styles.sectionHeading}>Performance Anomalies</h2>
-          <pre>{JSON.stringify(safeJSONParse(PerformanceAnomalies), null, 2)}</pre>
+          <pre className={styles.jsonContent}>{JSON.stringify(safeJSONParse(PerformanceAnomalies), null, 2)}</pre>
         </section>
 
         <section className={styles.section}>
           <h2 className={styles.sectionHeading}>Service Analysis</h2>
-          <pre>{JSON.stringify(safeJSONParse(ServiceAnalysis), null, 2)}</pre>
+          <pre className={styles.jsonContent}>{JSON.stringify(safeJSONParse(ServiceAnalysis), null, 2)}</pre>
         </section>
 
         <section className={styles.section}>
           <h2 className={styles.sectionHeading}>Trace Highlights</h2>
-          <pre>{JSON.stringify(safeJSONParse(TraceHighlights), null, 2)}</pre>
+          <pre className={styles.jsonContent}>{JSON.stringify(safeJSONParse(TraceHighlights), null, 2)}</pre>
         </section>
 
         <section className={styles.section}>
           <h2 className={styles.sectionHeading}>Correlated Events</h2>
-          <pre>{JSON.stringify(safeJSONParse(CorrelatedEvents), null, 2)}</pre>
+          <pre className={styles.jsonContent}>{JSON.stringify(safeJSONParse(CorrelatedEvents), null, 2)}</pre>
         </section>
 
         <section className={styles.section}>
@@ -157,7 +152,6 @@ export default function Home() {
     );
   };
 
-  // Render non-JSON files (Markdown content)
   const renderNonJSONFile = (content) => {
     return <ReactMarkdown>{content}</ReactMarkdown>;
   };
@@ -195,7 +189,6 @@ export default function Home() {
 
       {analysisComplete && (
         <>
-          {/* Tab navigation */}
           <div className={styles.tabs}>
             {Object.keys(results).map((filename) => (
               <button
@@ -203,12 +196,11 @@ export default function Home() {
                 className={`${styles.tabButton} ${activeTab === filename ? styles.active : ''}`}
                 onClick={() => setActiveTab(filename)}
               >
-                {filename}
+                {filename.replace(/\.[^/.]+$/, "")}
               </button>
             ))}
           </div>
 
-          {/* Render the content based on the active tab */}
           <div className={styles.resultsContainer}>
             {activeTab === 'aggregatedata.json' && renderAggregatedData(results[activeTab])}
             {['metric_analysis.md', 'trace_analysis.md', 'web_search.md'].includes(activeTab) && (
@@ -216,7 +208,6 @@ export default function Home() {
             )}
           </div>
 
-          {/* Chatbot Section */}
           <div className={styles.chatSection}>
             <h2 className={styles.resultHeading}>SRE Assistant Chatbot</h2>
             {analysisContext && <SREChatbot analysisContext={analysisContext} />}
