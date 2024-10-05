@@ -25,7 +25,7 @@ export default function Home() {
     formData.append('trace_file', traceFile);
 
     try {
-      await axios.post('http://localhost:8000/analyze', formData, {
+      await axios.post('https://fastapi-app-871836237314.europe-central2.run.app/analyze', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -39,7 +39,7 @@ export default function Home() {
 
   const fetchResults = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/results');
+      const response = await axios.get('https://fastapi-app-871836237314.europe-central2.run.app/results');
       setResults(response.data);
       setAnalysisContext(JSON.stringify(response.data));
       setIsAnalyzing(false);
